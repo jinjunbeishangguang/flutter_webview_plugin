@@ -9,8 +9,8 @@
     <application
         android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="warning_wall"
-        android:icon="@mipmap/ic_launcher">
+        android:label="KADA监控中心"
+        android:icon="@mipmap/icon2">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
