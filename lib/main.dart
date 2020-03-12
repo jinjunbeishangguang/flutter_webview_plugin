@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +14,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyHomePage();
+    SystemChrome.setEnabledSystemUIOverlays([]);
+
+    return new MaterialApp(
+//      home:MyHomePage(),
+      home : new Scaffold(
+        body:WillPopScope(
+          onWillPop:() async{
+            print("aaaa");
+            await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+
+          },
+          child:MyHomePage()
+
+        )
+      )
+
+
+    );
   }
 }
 
@@ -32,38 +50,35 @@ class _MyHomePageState extends State<MyHomePage> {
       return connectivityResult != ConnectivityResult.none;
   }
 
-  void initState() {
-    settimerout();
-  }
   void settimerout(){
-//    const timeout = const Duration(seconds: 10);
-//    Timer(timeout, () {
-//      //到时回调
-//      setState(() {
-//      });
-//      print('afterTimer='+DateTime.now().toString());
-//    });
-
-    const period = const Duration(seconds: 10);
-    Timer.periodic(period, (timer) {
-      print("定时调用");
-      print('currentTime='+DateTime.now().toString());
-            setState(() {
+    const timeout = const Duration(seconds: 10);
+    Timer(timeout, () {
+      //到时回调
+      setState(() {
       });
+      print('afterTimer='+DateTime.now().toString());
     });
+
+//    const period = const Duration(seconds: 10);
+//    Timer.periodic(period, (timer) {
+//      print("定时调用");
+//      print('currentTime='+DateTime.now().toString());
+//            setState(() {
+//      });
+//    });
   }
 
   @override
   Widget build(BuildContext context) {
     print("build");
+
     return FutureBuilder<bool>(
           future:getWidget(),
           builder: (BuildContext context, AsyncSnapshot snapshot){
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError ) {
                 // 请求失败，显示错误
-                return new MaterialApp(
-                    home:
+                return
                     AlertDialog(
                       title: Text("提示"),
                       content: Text("检查到目前网络不畅通，请检查网络设置。我们将于10s之后再次检测"),
@@ -73,8 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () => Navigator.of(context).pop(), //关闭对话框
                         ),
                       ],
-                    )
-                );
+                    );
+
               } else{
                 // 请求成功，显示数据
                 print("result");
@@ -82,22 +97,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 print(snapshot.connectionState);
                 print("bbb");
                 if(snapshot.data == true ){
-                  return new MaterialApp(
-                    routes: {
-                      "/": (_) => new WebviewScaffold(
+                      return new WebviewScaffold(
                         url: "http://www.necta.online/anfang/wall/shequ.html",
                         useWideViewPort: true,
                         displayZoomControls:true,
                         withOverviewMode: true,
-                      ),
-                    },
-                  );
+
+                      );
                 }else{
-//                  settimerout();
-                  return new MaterialApp(
-                      home: Builder(
-                        builder: (context) =>
-                            AlertDialog(
+                  settimerout();
+                  return AlertDialog(
                           title: Text("提示"),
                           content: Text("检查到目前网络不畅通，请检查网络设置。我们将于10s之后再次检测"),
                           actions: <Widget>[
@@ -107,9 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ],
 
-                        ),
-                      )
-                  );
+                        );
+
 
                 }
 
