@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.warning_wall">
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -10,7 +11,9 @@
         android:usesCleartextTraffic="true"
         android:name="io.flutter.app.FlutterApplication"
         android:label="KADA监控中心"
-        android:icon="@mipmap/icon2">
+        android:icon="@mipmap/icon2"
+        android:allowBackup="true"
+        tools:replace="icon,label,allowBackup">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
